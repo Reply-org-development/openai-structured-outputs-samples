@@ -60,3 +60,7 @@ To see the arguments for the `generate_ui` tool, you can toggle the JSON view by
 This demo app can be easily customized by modifying the components and their parameters used by the `generate_ui` tool.
 
 Update the `components-definition.ts` file to add or remove components, and make sure you update the `components.tsx` file so that each component definition maps to a React component.
+
+## Repository Guidelines
+
+For shared conventions and contributor guidance, see the root: [AGENTS.md](../AGENTS.md).

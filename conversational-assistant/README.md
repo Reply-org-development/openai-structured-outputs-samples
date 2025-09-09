@@ -126,3 +126,39 @@ You can also customize in this file the initial message shown in the chat.
 This app uses demo data, defined in `data/demo-data.ts`. The corresponding data types are defined in `data/types.ts`.
 
 Feel free to remove these files to fetch the data from your own source.
+
+## Repository Guidelines
+
+For coding standards, project structure, and security tips, see the root guidelines: [AGENTS.md](../AGENTS.md).
+
+## Agentic Interactions Guide
+
+Looking for a non‑code, in‑depth explanation of how the assistant streams responses, calls tools, and generates UI? Read: [AGENTIC_INTERACTIONS.md](./AGENTIC_INTERACTIONS.md)
+
+## Flow (ASCII Infographic)
+
+```
+User
+  |
+  v
+Browser (Chat UI)
+  | 1) POST /api/turn_response (messages + history)
+  v
+Server (Next.js Route)
+  | 2) openai.beta.chat.completions.stream({ model, tools, ... })
+  v
+OpenAI Model
+  | 3) STREAM -> assistant_delta (text)
+  |            function_arguments_delta (tool args chunks)
+  |            function_arguments_done (tool args complete)
+  v
+Server -> Browser (SSE frames)
+  | 4) Browser accumulates args (partial JSON)
+  | 5) If done: handleTool(name, args)
+  |      - generate_ui -> render components
+  |      - business tool -> call /api/tools/* (demo data)
+  | 6) Append tool result to conversation (role: tool)
+  | 7) Loop: send updated conversation for next step
+  v
+Updated UI (text + generated UI)
+```

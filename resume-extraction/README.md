@@ -58,3 +58,7 @@ You can then see the extracted fields stream in the UI. To see the full JSON res
 ![Resume Extraction Streaming Response](./public/screenshot-json.jpg)
 
 To update the fields extracted by the model, you can edit the zod schema in `lib/resume.ts` file.
+
+## Repository Guidelines
+
+For coding style, commands, and security notes, see: [AGENTS.md](../AGENTS.md).

@@ -1,0 +1,19 @@
+# dependencies
+node_modules
+
+# next build output
+.next
+out
+
+# git & local configs
+.git
+.gitignore
+.env
+
+# editor/OS files
+.DS_Store
+
+# build artifacts
+Dockerfile
+k8s
+
