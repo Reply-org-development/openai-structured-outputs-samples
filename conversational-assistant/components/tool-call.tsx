@@ -22,7 +22,7 @@ const ApiCallCell: React.FC<FunctionCallProps> = ({
   }
 
   return (
-    <div className="flex flex-col bg-white rounded-[16px] w-[70%] relative my-3">
+    <div className="flex flex-col bg-white rounded-[16px] w-[70%] relative my-3 border border-border shadow-sm motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-left-1 motion-safe:duration-300">
       <div>
         {previousItem.type === 'function_call' ? (
           <div className="absolute -top-16 pt-1.5 z-0 left-5">
@@ -31,9 +31,9 @@ const ApiCallCell: React.FC<FunctionCallProps> = ({
         ) : null}
 
         <div className="flex flex-col text-sm overflow-x-hidden rounded-[16px]  z-10">
-          <div className="font-semibold p-3 pl-4 text-gray-700 rounded-b-none flex justify-between">
+          <div className="font-semibold p-3 pl-4 text-zinc-800 rounded-b-none flex justify-between bg-accent border-b border-border rounded-t-[16px]">
             <div className="flex items-center">
-              <Zap size={16} />
+              <Zap size={16} className="text-primary" />
               <span className="ml-2">
                 {functionCall.name
                   .split('_')
@@ -42,7 +42,7 @@ const ApiCallCell: React.FC<FunctionCallProps> = ({
               </span>
             </div>
             <span
-              className={`mt-0.5 transform text-gray-500 cursor-pointer transition-transform duration-300 ${
+              className={`mt-0.5 transform text-zinc-600 cursor-pointer transition-transform duration-300 ${
                 showDetails ? 'rotate-90' : 'rotate-0'
               }`}
               onClick={toggleShowDetails}
@@ -51,8 +51,8 @@ const ApiCallCell: React.FC<FunctionCallProps> = ({
             </span>
           </div>
           {showDetails && (
-            <div>
-              <div className="max-h-72 overflow-y-scroll text-xs border-b-[1.5px]">
+            <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2 motion-safe:duration-200">
+              <div className="max-h-72 overflow-y-scroll elegant-scroll text-xs border-b-[1.5px]">
                 <SyntaxHighlighter
                   customStyle={{
                     backgroundColor: '#fff',
@@ -70,7 +70,7 @@ const ApiCallCell: React.FC<FunctionCallProps> = ({
                   {JSON.stringify(functionCall.parsedArguments, null, 2)}
                 </SyntaxHighlighter>
               </div>
-              <div className="max-h-96 overflow-y-scroll min-h-20 rounded-lg rounded-t-none">
+              <div className="max-h-96 overflow-y-scroll elegant-scroll min-h-20 rounded-lg rounded-t-none">
                 {functionCall.output ? (
                   <SyntaxHighlighter
                     customStyle={{
@@ -119,17 +119,17 @@ const ToolCall: React.FC<FunctionCallProps> = ({
                 {showJSON ? (
                   <X
                     size={20}
-                    className="cursor-pointer text-neutral-900 hover:text-neutral-700"
+                    className="cursor-pointer text-primary hover:opacity-80"
                   />
                 ) : (
                   <Code
                     size={20}
-                    className="cursor-pointer text-neutral-900 hover:text-neutral-700"
+                    className="cursor-pointer text-primary hover:opacity-80"
                   />
                 )}
               </div>
               <div
-                className={`text-xs max-h-[500px] font-mono overflow-x-scroll h-full overflow-y-scroll rounded-xl ${
+                className={`text-xs max-h-[500px] font-mono overflow-x-scroll h-full overflow-y-scroll elegant-scroll rounded-xl ${
                   showJSON ? '' : 'hidden'
                 }`}
               >
@@ -146,7 +146,7 @@ const ToolCall: React.FC<FunctionCallProps> = ({
                   {JSON.stringify(functionCall.parsedArguments, null, 2)}
                 </SyntaxHighlighter>
               </div>
-              <div className={`${showJSON ? 'hidden' : ''}`}>
+              <div className={`${showJSON ? 'hidden' : ''} motion-safe:animate-in motion-safe:fade-in motion-safe:duration-200`}>
                 {getComponent(functionCall.parsedArguments.component) ?? null}
               </div>
             </div>
