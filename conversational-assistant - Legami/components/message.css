@@ -1,0 +1,32 @@
+@keyframes typingPulse {
+  0%, 100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  margin: 0 3px;
+  border-radius: 9999px;
+  display: inline-block;
+  background-color: currentColor;
+  animation: typingPulse 1.2s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}

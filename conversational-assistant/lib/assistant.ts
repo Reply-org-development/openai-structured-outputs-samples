@@ -85,7 +85,8 @@ export const processMessages = async () => {
     chatMessages,
     conversationItems,
     setChatMessages,
-    setConversationItems
+    setConversationItems,
+    setAssistantTyping
   } = useConversationStore.getState()
 
   const allConversationItems: ChatCompletionMessageParam[] = [
@@ -98,6 +99,8 @@ export const processMessages = async () => {
 
   let assistantMessageContent = ''
   let functionArguments = ''
+
+  setAssistantTyping(true)
 
   await handleTurn(allConversationItems, async ({ event, data }) => {
     // Handle message from the assistant
@@ -237,4 +240,7 @@ export const processMessages = async () => {
       await processMessages()
     }
   })
+
+  // turn finished (no more streaming)
+  setAssistantTyping(false)
 }

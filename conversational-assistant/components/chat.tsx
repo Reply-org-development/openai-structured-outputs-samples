@@ -4,6 +4,9 @@ import { Item } from '@/lib/assistant'
 import React, { useEffect, useRef, useState } from 'react'
 import ToolCall from './tool-call'
 import Message from './message'
+import useConversationStore from '@/stores/useConversationStore'
+import { ArrowDown, Bot } from 'lucide-react'
+import './message.css'
 
 interface ChatProps {
   items: Item[]
@@ -13,6 +16,16 @@ interface ChatProps {
 const Chat: React.FC<ChatProps> = ({ items, onSendMessage }) => {
   const itemsEndRef = useRef<HTMLDivElement>(null)
   const [inputMessageText, setinputMessageText] = useState<string>('')
+  const { isAssistantTyping } = useConversationStore()
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [showScrollDown, setShowScrollDown] = useState(false)
+  const suggestions = [
+    'Mostra prodotti',
+    'Idee regalo',
+    'Stato ordine',
+    'Resi e spedizioni',
+    'Contatta supporto'
+  ]
 
   const scrollToBottom = () => {
     itemsEndRef.current?.scrollIntoView({ behavior: 'instant' })
@@ -22,10 +35,22 @@ const Chat: React.FC<ChatProps> = ({ items, onSendMessage }) => {
     scrollToBottom()
   }, [items])
 
+  useEffect(() => {
+    const el = scrollContainerRef.current
+    if (!el) return
+    const onScroll = () => {
+      const distance = el.scrollHeight - el.scrollTop - el.clientHeight
+      setShowScrollDown(distance > 120)
+    }
+    el.addEventListener('scroll', onScroll)
+    onScroll()
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
     <div className="flex h-full w-full min-h-0">
       <div className="flex flex-col h-full w-full max-w-6xl mx-auto gap-2 px-4 md:px-8 min-h-0">
-        <div className="flex-1 overflow-y-auto elegant-scroll motion-safe:animate-in motion-safe:fade-in motion-safe:duration-300">
+        <div ref={scrollContainerRef} className="flex-1 overflow-y-auto elegant-scroll motion-safe:animate-in motion-safe:fade-in motion-safe:duration-300">
           <div className="space-y-1 pt-6 pb-24">
             {items.map((item, index) => (
               <React.Fragment key={index}>
@@ -39,13 +64,46 @@ const Chat: React.FC<ChatProps> = ({ items, onSendMessage }) => {
                 )}
               </React.Fragment>
             ))}
+            {isAssistantTyping ? (
+              <div className="flex items-start gap-3">
+                <div className="shrink-0 size-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
+                  <Bot size={16} />
+                </div>
+                <div className="max-w-[70%] rounded-[18px] px-3 py-2 font-light bg-accent text-zinc-500 border border-border">
+                  <span className="typing-dot"></span>
+                  <span className="typing-dot"></span>
+                  <span className="typing-dot"></span>
+                </div>
+              </div>
+            ) : null}
             <div ref={itemsEndRef} />
           </div>
         </div>
+        {showScrollDown ? (
+          <button
+            className="fixed bottom-24 right-6 md:right-[calc(50%-36rem+1rem)] z-30 rounded-full bg-primary text-white p-3 shadow-md hover:shadow-lg transition-all"
+            onClick={() => itemsEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            aria-label="Torna in fondo"
+          >
+            <ArrowDown className="size-4" />
+          </button>
+        ) : null}
         <div className="pb-6 -mb-2 bg-gradient-to-t from-background via-background/70 to-transparent">
           <div className="flex items-center">
             <div className="flex w-full items-center">
               <div className="flex w-full flex-col gap-1.5 rounded-[26px] p-2 transition-all duration-200 ease-out bg-white border border-border shadow-sm focus-within:shadow-md">
+                <div className="flex flex-wrap gap-1.5 px-2 pt-1 pb-0.5">
+                  {suggestions.map(s => (
+                    <button
+                      key={s}
+                      className="rounded-full border border-border bg-secondary px-3 py-1 text-xs text-zinc-700 hover:bg-accent transition-colors"
+                      onClick={() => setinputMessageText(s)}
+                      type="button"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
                 <div className="flex items-center gap-1.5 md:gap-2 pl-4">
                   <div className="flex min-w-0 flex-1 flex-col">
                     <textarea

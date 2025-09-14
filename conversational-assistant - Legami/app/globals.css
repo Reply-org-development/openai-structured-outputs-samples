@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Legami-inspired light theme */
+    /* Surfaces */
+    --background: 0 0% 98%; /* #f7f7f7 */
+    --foreground: 20 14.3% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 14.3% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14.3% 4.1%;
+    /* Brand red (approx #E30613) */
+    --primary: 356 83% 48%;
+    --primary-foreground: 0 0% 100%;
+    /* Soft neutrals / pastels */
+    --secondary: 0 0% 98%;
+    --secondary-foreground: 24 9.8% 10%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 25 5.3% 44.7%;
+    /* Light pink accent for bubbles/cards */
+    --accent: 356 100% 97%;
+    --accent-foreground: 24 9.8% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 0 0% 88%;
+    --input: 0 0% 90%;
+    --ring: 356 83% 48%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.75rem;
+  }
+  .dark {
+    --background: 20 14.3% 4.1%;
+    --foreground: 60 9.1% 97.8%;
+    --card: 20 14.3% 4.1%;
+    --card-foreground: 60 9.1% 97.8%;
+    --popover: 20 14.3% 4.1%;
+    --popover-foreground: 60 9.1% 97.8%;
+    --primary: 356 83% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 12 6.5% 15.1%;
+    --secondary-foreground: 60 9.1% 97.8%;
+    --muted: 12 6.5% 15.1%;
+    --muted-foreground: 24 5.4% 63.9%;
+    --accent: 356 28% 18%;
+    --accent-foreground: 60 9.1% 97.8%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 12 6.5% 15.1%;
+    --input: 12 6.5% 15.1%;
+    --ring: 356 83% 48%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Base document styles */
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-geist-sans);
+}
+
+html, body {
+  height: 100%;
+}
+
+.font-mono, pre, code {
+  font-family: var(--font-geist-mono) !important;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Elegant Legami-style scrollbar */
+.elegant-scroll {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: hsl(var(--primary)) hsl(var(--muted));
+  scrollbar-gutter: stable both-edges;
+}
+
+.elegant-scroll::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.elegant-scroll::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 9999px;
+}
+
+.elegant-scroll::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--primary));
+  border-radius: 9999px;
+  border: 2px solid hsl(var(--muted));
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.elegant-scroll::-webkit-scrollbar-thumb:hover {
+  /* Slightly darker on hover; falls back gracefully */
+  background-color: color-mix(in srgb, hsl(var(--primary)), black 12%);
+}
+
+.elegant-scroll::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Legami subtle patterned background */
+.bg-legami {
+  background-color: hsl(var(--background));
+  background-image:
+    radial-gradient(hsl(var(--primary) / 0.06) 1px, transparent 1px),
+    radial-gradient(hsl(var(--primary) / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--primary) / 0.03), transparent 25%);
+  background-size: 18px 18px, 18px 18px, auto;
+  background-position: 0 0, 9px 9px, top;
+  animation: bg-drift 28s ease-in-out infinite;
+}
+
+/* Plain background option */
+.bg-plain {
+  background-color: hsl(var(--background));
+}
+
+/* Soft gradient background option */
+.bg-gradient-legami {
+  background: radial-gradient(1200px 600px at 80% -100px, hsl(var(--primary) / 0.08), transparent 60%),
+    radial-gradient(900px 500px at 10% 0, hsl(var(--primary) / 0.06), transparent 50%),
+    hsl(var(--background));
+}
+
+@keyframes bg-drift {
+  0% {
+    background-position: 0 0, 9px 9px, 0 0;
+  }
+  50% {
+    background-position: 3px 3px, 12px 12px, 0 12px;
+  }
+  100% {
+    background-position: 0 0, 9px 9px, 0 0;
+  }
+}

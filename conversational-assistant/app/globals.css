@@ -138,6 +138,18 @@ html, body {
   animation: bg-drift 28s ease-in-out infinite;
 }
 
+/* Plain background option */
+.bg-plain {
+  background-color: hsl(var(--background));
+}
+
+/* Soft gradient background option */
+.bg-gradient-legami {
+  background: radial-gradient(1200px 600px at 80% -100px, hsl(var(--primary) / 0.08), transparent 60%),
+    radial-gradient(900px 500px at 10% 0, hsl(var(--primary) / 0.06), transparent 50%),
+    hsl(var(--background));
+}
+
 @keyframes bg-drift {
   0% {
     background-position: 0 0, 9px 9px, 0 0;
