@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import { useEffect, useRef, useState } from 'react'
 import { Search, Sun, Waves } from 'lucide-react'
 import { search_redis } from '@/config/functions'
@@ -26,7 +26,11 @@ export default function Header() {
     'https://www.legami.com/dw/image/v2/BDSQ_PRD/on/demandware.static/-/Sites-legami-master-catalog/default/dwf6da9456/images_legami/zoom/AG2616062_1.jpg?sw=1200&sh=1200'
 
   const parseBool = (v?: string | number | boolean) =>
-    ['true', '1', 'yes', 'on'].includes(String(v ?? '').trim().toLowerCase())
+    ['true', '1', 'yes', 'on'].includes(
+      String(v ?? '')
+        .trim()
+        .toLowerCase()
+    )
   const LIVE_SEARCH = parseBool(process.env.NEXT_PUBLIC_SEARCH_LIVE as any)
   const DEBOUNCE_MS = Number(process.env.NEXT_PUBLIC_SEARCH_DEBOUNCE_MS || 300)
   const MIN_CHARS = Number(process.env.NEXT_PUBLIC_SEARCH_MIN_CHARS || 2)
@@ -91,7 +95,10 @@ export default function Header() {
           </div>
           <span className="text-sm font-medium text-zinc-700">Assistant</span>
         </div>
-        <div ref={containerRef} className="relative mx-2 hidden flex-1 items-center md:flex">
+        <div
+          ref={containerRef}
+          className="relative mx-2 hidden flex-1 items-center md:flex"
+        >
           <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400" />
           <form
             onSubmit={async e => {
@@ -146,12 +153,16 @@ export default function Header() {
                 if (e.key === 'ArrowDown') {
                   e.preventDefault()
                   setActiveIndex(prev =>
-                    results.length ? (prev + 1 + results.length) % results.length : -1
+                    results.length
+                      ? (prev + 1 + results.length) % results.length
+                      : -1
                   )
                 } else if (e.key === 'ArrowUp') {
                   e.preventDefault()
                   setActiveIndex(prev =>
-                    results.length ? (prev - 1 + results.length) % results.length : -1
+                    results.length
+                      ? (prev - 1 + results.length) % results.length
+                      : -1
                   )
                 } else if (e.key === 'Enter') {
                   // handled by onSubmit
@@ -180,8 +191,8 @@ export default function Header() {
             </div>
           )}
           {open && (
-            <div className="absolute left-0 right-0 top-10 z-50 rounded-xl border border-zinc-200 bg-white shadow-lg">
-              <div className="max-h-96 overflow-y-auto p-2">
+            <div className="absolute left-0 right-0 top-10 z-50 rounded-xl border border-zinc-200 bg-white shadow-lg pointer-events-none">
+              <div className="max-h-96 overflow-y-auto p-2 pointer-events-auto">
                 {loading ? (
                   <div className="p-2">
                     <div className="flex items-center gap-2 p-2 text-xs text-zinc-500">
@@ -229,14 +240,19 @@ export default function Header() {
                         viewProductDetails(item.code)
                       }}
                       className={`flex w-full items-center gap-3 rounded-lg p-2 text-left hover:bg-zinc-50 ${
-                        activeIndex === idx ? 'bg-zinc-50 ring-1 ring-zinc-200' : ''
+                        activeIndex === idx
+                          ? 'bg-zinc-50 ring-1 ring-zinc-200'
+                          : ''
                       }`}
                     >
                       <img
                         alt={item.title}
                         src={
                           item?.product?.primary_image || item?.primary_image
-                            ? `/imgs/${item.product?.primary_image || item.primary_image}`
+                            ? `/imgs/${
+                                item.product?.primary_image ||
+                                item.primary_image
+                              }`
                             : DEFAULT_IMAGE_URL
                         }
                         className="h-12 w-12 rounded object-cover"
@@ -246,7 +262,9 @@ export default function Header() {
                           {item.title}
                         </div>
                         <div className="text-xs text-stone-500 line-clamp-1">
-                          {item.product?.description || item.product?.desc || ''}
+                          {item.product?.description ||
+                            item.product?.desc ||
+                            ''}
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-0.5">
@@ -260,14 +278,19 @@ export default function Header() {
                         )}
                         {typeof item.similarity === 'number' && (
                           <div className="text-[11px] font-medium text-emerald-600">
-                            {Math.round(Math.max(0, Math.min(1, item.similarity)) * 100)}% match
+                            {Math.round(
+                              Math.max(0, Math.min(1, item.similarity)) * 100
+                            )}
+                            % match
                           </div>
                         )}
                       </div>
                     </button>
                   ))
                 ) : (
-                  <div className="p-4 text-sm text-zinc-500">Nessun risultato</div>
+                  <div className="p-4 text-sm text-zinc-500">
+                    Nessun risultato
+                  </div>
                 )}
               </div>
             </div>

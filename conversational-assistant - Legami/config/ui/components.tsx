@@ -13,7 +13,11 @@ import {
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { ChartConfig, ChartContainer } from '@/components/ui/chart'
 import { getComponent } from '@/lib/components-mapping'
-import { addToCart, selectOrder, viewProductDetails } from '@/config/user-actions'
+import {
+  addToCart,
+  selectOrder,
+  viewProductDetails
+} from '@/config/user-actions'
 import { Button } from '@/components/ui/button'
 import { ShoppingCart, Info } from 'lucide-react'
 
@@ -134,7 +138,7 @@ export const ItemComponent = ({
   price,
   match
 }: any) => (
-  <div className="flex flex-col mb-3 gap-3 justify-between border border-stone-200 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex-shrink-0 w-full h-[420px] overflow-hidden">
+  <div className="flex flex-col mb-3 gap-3 justify-between border border-stone-200 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex-shrink-0 w-full h-[500px] overflow-hidden">
     <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-white">
       <span className="bg-[#e30613] px-2 py-0.5 rounded">LEGAMI</span>
     </div>
@@ -154,7 +158,7 @@ export const ItemComponent = ({
         <h3 className="text-sm font-semibold text-stone-800 line-clamp-2">
           {item_name ?? ''}
         </h3>
-        <p className="text-xs text-stone-500 line-clamp-3">
+        <p className="text-xs text-stone-500 line-clamp-5">
           {description ?? ''}
         </p>
       </div>
@@ -162,7 +166,9 @@ export const ItemComponent = ({
     <div className="mt-auto">
       {typeof price === 'number' && !isNaN(price) ? (
         <div className="flex items-baseline gap-2">
-          <span className="font-semibold text-stone-900 text-lg">{formatEUR(price)}</span>
+          <span className="font-semibold text-stone-900 text-lg">
+            {formatEUR(price)}
+          </span>
         </div>
       ) : null}
       {typeof match === 'number' && match >= 0 ? (
@@ -170,7 +176,7 @@ export const ItemComponent = ({
           {Math.round(Math.max(0, Math.min(1, match)) * 100)}% match
         </div>
       ) : null}
-      <div className="mt-2 grid grid-cols-2 gap-2">
+      <div className="mt-2 grid grid-cols-2 gap-2 relative z-[60]">
         <Button
           size="sm"
           variant="secondary"
@@ -207,21 +213,19 @@ export const PlpGridComponent = ({
     cols === 2
       ? 'md:grid-cols-2'
       : cols === 4
-        ? 'md:grid-cols-4'
-        : cols === 5
-          ? 'md:grid-cols-5'
-          : cols === 6
-            ? 'md:grid-cols-6'
-            : 'md:grid-cols-3'
-  const sorted = (children || [])
-    .slice()
-    .sort((a: any, b: any) => {
-      const ma = typeof a?.match === 'number' ? a.match : 0
-      const mb = typeof b?.match === 'number' ? b.match : 0
-      return mb - ma // relevance desc
-    })
+      ? 'md:grid-cols-4'
+      : cols === 5
+      ? 'md:grid-cols-5'
+      : cols === 6
+      ? 'md:grid-cols-6'
+      : 'md:grid-cols-3'
+  const sorted = (children || []).slice().sort((a: any, b: any) => {
+    const ma = typeof a?.match === 'number' ? a.match : 0
+    const mb = typeof b?.match === 'number' ? b.match : 0
+    return mb - ma // relevance desc
+  })
   return (
-    <div className={`grid grid-cols-1 ${gridColsClass} gap-4 w-full`}> 
+    <div className={`grid grid-cols-1 ${gridColsClass} gap-4 w-full`}>
       {sorted.map((child: any, index: number) => (
         <React.Fragment key={index}>{getComponent(child)}</React.Fragment>
       ))}
@@ -270,9 +274,9 @@ export const OrderComponent = ({ id, total, date, status, products }: any) => (
                   x {product.quantity ?? ''}
                 </span>
               </div>
-        <div className="text-xs font-semibold text-gray-800">
-          {formatEUR(product.item?.price)}
-        </div>
+              <div className="text-xs font-semibold text-gray-800">
+                {formatEUR(product.item?.price)}
+              </div>
             </div>
           ))}
         </div>
