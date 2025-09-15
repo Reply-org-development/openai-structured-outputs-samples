@@ -4,7 +4,7 @@ const componentsList = components.map(component => {
   return { $ref: `#/$defs/${component.name}` }
 })
 
-const componentsDefinitions = components.reduce((acc, component) => {
+const componentsDefinitions = components.reduce((acc, component: any) => {
   acc[component.name] = {
     type: 'object',
     properties: {
@@ -14,6 +14,7 @@ const componentsDefinitions = components.reduce((acc, component) => {
       },
       ...component.parameters
     },
+    // Strict schema requires all properties to be listed in required
     required: ['name', ...Object.keys(component.parameters)],
     additionalProperties: false
   }

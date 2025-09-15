@@ -57,14 +57,10 @@ export async function POST(req: Request) {
     })
     const vec = toFloat32Buffer(emb.data[0].embedding as unknown as number[])
 
-    // Oversample if sorting by price
-    // Default ordering: by price ascending unless explicitly 'price_desc'
-    const order: 'price_asc' | 'price_desc' =
-      sort_by === 'price_desc' ? 'price_desc' : 'price_asc'
-
     // Enforce a hard cap of 5 results
     const kLimit = Math.min(5, Number(k) || 5)
-    const kQuery = Math.min(50, Math.max(kLimit, kLimit * 3))
+    // Oversample to safely filter by relevance threshold
+    const kQuery = Math.min(50, Math.max(kLimit * 5, 10))
 
     const returnFields = [
       'code',
@@ -143,15 +139,21 @@ export async function POST(req: Request) {
       items.push(row)
     }
 
-    const dir = order === 'price_asc' ? 1 : -1
-    const out = items
-      .slice()
-      .sort((a, b) => {
-        const pa = typeof a.price === 'number' ? a.price : Number.POSITIVE_INFINITY
-        const pb = typeof b.price === 'number' ? b.price : Number.POSITIVE_INFINITY
-        if (pa === pb) return (a.score ?? 0) - (b.score ?? 0)
-        return dir * (pa - pb)
-      })
+    // Convert distance score -> similarity [0..1] using a stable mapping.
+    // sim = 1 / (1 + distance). This works regardless of metric and avoids negatives.
+    const MIN_RELEVANCE = Number(process.env.MIN_RELEVANCE || 0.4)
+    const withSim = items.map(it => ({
+      ...it,
+      similarity:
+        typeof it.score === 'number' && isFinite(it.score)
+          ? 1 / (1 + Math.max(0, it.score))
+          : 0
+    }))
+
+    const filtered = withSim.filter(it => it.similarity >= MIN_RELEVANCE)
+
+    const out = filtered
+      .sort((a, b) => (b.similarity - a.similarity) || ((a.score ?? 0) - (b.score ?? 0)))
       .slice(0, kLimit)
 
     return new Response(
@@ -159,7 +161,8 @@ export async function POST(req: Request) {
         count: out.length,
         k: kLimit,
         filters: { min_price, max_price },
-        sort_by: order,
+        sort_by: 'relevance',
+        min_relevance: MIN_RELEVANCE,
         mode_used: 'semantic',
         items: out
       }),

@@ -131,7 +131,8 @@ export const ItemComponent = ({
   item_name,
   primary_image,
   description,
-  price
+  price,
+  match
 }: any) => (
   <div className="flex flex-col mb-3 gap-3 justify-between border border-stone-200 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex-shrink-0 w-full h-[420px] overflow-hidden">
     <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-white">
@@ -162,6 +163,11 @@ export const ItemComponent = ({
       {typeof price === 'number' && !isNaN(price) ? (
         <div className="flex items-baseline gap-2">
           <span className="font-semibold text-stone-900 text-lg">{formatEUR(price)}</span>
+        </div>
+      ) : null}
+      {typeof match === 'number' && match >= 0 ? (
+        <div className="mt-1 text-xs font-medium text-emerald-600">
+          {Math.round(Math.max(0, Math.min(1, match)) * 100)}% match
         </div>
       ) : null}
       <div className="mt-2 grid grid-cols-2 gap-2">
@@ -207,9 +213,16 @@ export const PlpGridComponent = ({
           : cols === 6
             ? 'md:grid-cols-6'
             : 'md:grid-cols-3'
+  const sorted = (children || [])
+    .slice()
+    .sort((a: any, b: any) => {
+      const ma = typeof a?.match === 'number' ? a.match : 0
+      const mb = typeof b?.match === 'number' ? b.match : 0
+      return mb - ma // relevance desc
+    })
   return (
     <div className={`grid grid-cols-1 ${gridColsClass} gap-4 w-full`}> 
-      {children?.map((child: any, index: number) => (
+      {sorted.map((child: any, index: number) => (
         <React.Fragment key={index}>{getComponent(child)}</React.Fragment>
       ))}
     </div>

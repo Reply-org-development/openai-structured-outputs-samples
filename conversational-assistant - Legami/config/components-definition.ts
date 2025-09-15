@@ -64,8 +64,13 @@ export const components = [
       },
       price: {
         type: 'number'
+      },
+      match: {
+        type: 'number',
+        description: 'Similarity 0..1 to display as percentage'
       }
-    }
+    },
+    required: ['id', 'item_name']
   },
   {
     name: 'order',

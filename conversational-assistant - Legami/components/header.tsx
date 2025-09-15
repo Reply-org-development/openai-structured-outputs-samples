@@ -43,10 +43,11 @@ export default function Header() {
     try {
       const res = await search_redis({
         query_text: qTrim,
-        include_details: true,
-        sort_by: 'price_asc'
+        include_details: true
       })
-      const items = res?.items || []
+      const items = (res?.items || [])
+        .slice()
+        .sort((a: any, b: any) => (b?.similarity ?? 0) - (a?.similarity ?? 0))
       setResults(items)
       setOpen(!!items.length)
       setActiveIndex(items.length ? 0 : -1)
@@ -248,14 +249,21 @@ export default function Header() {
                           {item.product?.description || item.product?.desc || ''}
                         </div>
                       </div>
-                      {typeof item.price === 'number' && (
-                        <div className="text-sm font-semibold text-stone-900">
-                          {new Intl.NumberFormat('it-IT', {
-                            style: 'currency',
-                            currency: 'EUR'
-                          }).format(item.price)}
-                        </div>
-                      )}
+                      <div className="flex flex-col items-end gap-0.5">
+                        {typeof item.price === 'number' && (
+                          <div className="text-sm font-semibold text-stone-900">
+                            {new Intl.NumberFormat('it-IT', {
+                              style: 'currency',
+                              currency: 'EUR'
+                            }).format(item.price)}
+                          </div>
+                        )}
+                        {typeof item.similarity === 'number' && (
+                          <div className="text-[11px] font-medium text-emerald-600">
+                            {Math.round(Math.max(0, Math.min(1, item.similarity)) * 100)}% match
+                          </div>
+                        )}
+                      </div>
                     </button>
                   ))
                 ) : (
