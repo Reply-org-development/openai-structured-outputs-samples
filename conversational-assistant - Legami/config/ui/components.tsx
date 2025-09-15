@@ -13,8 +13,25 @@ import {
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { ChartConfig, ChartContainer } from '@/components/ui/chart'
 import { getComponent } from '@/lib/components-mapping'
-import { addToCart, selectOrder } from '@/config/user-actions'
+import { addToCart, selectOrder, viewProductDetails } from '@/config/user-actions'
 import { Button } from '@/components/ui/button'
+import { ShoppingCart, Info } from 'lucide-react'
+
+const DEFAULT_IMAGE_URL =
+  'https://www.legami.com/dw/image/v2/BDSQ_PRD/on/demandware.static/-/Sites-legami-master-catalog/default/dwf6da9456/images_legami/zoom/AG2616062_1.jpg?sw=1200&sh=1200'
+
+const formatEUR = (value?: number) => {
+  if (typeof value !== 'number' || isNaN(value)) return null
+  try {
+    return new Intl.NumberFormat('it-IT', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 2
+    }).format(value)
+  } catch {
+    return `€ ${value.toFixed(2)}`
+  }
+}
 
 const formatKey = (key: string) =>
   key.toLowerCase().replace(/[^a-zA-Z0-9]/g, '_')
@@ -116,38 +133,88 @@ export const ItemComponent = ({
   description,
   price
 }: any) => (
-  <div className="flex flex-col mb-3 gap-2 justify-between border border-gray-200 bg-gray-50 p-4 rounded-lg flex-shrink-0 w-52 h-96 overflow-x-auto">
+  <div className="flex flex-col mb-3 gap-3 justify-between border border-stone-200 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex-shrink-0 w-full h-[420px] overflow-hidden">
+    <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-white">
+      <span className="bg-[#e30613] px-2 py-0.5 rounded">LEGAMI</span>
+    </div>
     <div className="flex flex-col">
-      <div className="aspect-h-1 aspect-w-1 rounded-lg overflow-hidden text-center h-48">
-        {primary_image && primary_image.match(/\.(jpeg|jpg|gif|png|webp)$/) ? (
-          <img
-            src={`/imgs/${primary_image}`}
-            alt={item_name || 'Product Image'}
-            className="w-full h-auto object-cover object-center rounded-lg"
-          />
-        ) : (
-          <div className="animate-pulse bg-gray-200 h-full w-full rounded-lg"></div>
-        )}
+      <div className="rounded-lg overflow-hidden text-center h-44 bg-stone-100 flex items-center justify-center">
+        <img
+          src={
+            primary_image && primary_image.match(/\.(jpeg|jpg|gif|png|webp)$/)
+              ? `/imgs/${primary_image}`
+              : DEFAULT_IMAGE_URL
+          }
+          alt={item_name || 'Product Image'}
+          className="w-full h-full object-cover object-center"
+        />
       </div>
-      <div className="flex flex-col gap-1 justify-start">
-        <h3 className="text-sm font-semibold text-gray-700 line-clamp-2">
+      <div className="flex flex-col gap-1 justify-start mt-2">
+        <h3 className="text-sm font-semibold text-stone-800 line-clamp-2">
           {item_name ?? ''}
         </h3>
-        <p className="text-xs text-gray-500 line-clamp-3">
+        <p className="text-xs text-stone-500 line-clamp-3">
           {description ?? ''}
         </p>
       </div>
     </div>
-    <div className="flex justify-start">
+    <div className="mt-auto">
       {typeof price === 'number' && !isNaN(price) ? (
-        <span className="font-medium text-gray-900">${price.toFixed(2)}</span>
+        <div className="flex items-baseline gap-2">
+          <span className="font-semibold text-stone-900 text-lg">{formatEUR(price)}</span>
+        </div>
       ) : null}
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        <Button
+          size="sm"
+          variant="secondary"
+          className="rounded-full h-8 px-3 bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 gap-1 w-full"
+          onClick={() => viewProductDetails(id)}
+        >
+          <Info className="h-4 w-4" />
+          Dettagli
+        </Button>
+        <Button
+          size="sm"
+          className="rounded-full h-8 px-3 bg-[#e30613] hover:bg-[#c20510] text-white whitespace-nowrap gap-1 w-full"
+          onClick={() => addToCart(id)}
+        >
+          <ShoppingCart className="h-4 w-4" />
+          Aggiungi
+        </Button>
+      </div>
     </div>
-    <Button size="sm" onClick={() => addToCart(id)}>
-      Add to cart
-    </Button>
   </div>
 )
+
+// Simple PLP-style grid wrapper (3 columns by default)
+export const PlpGridComponent = ({
+  children,
+  columns
+}: {
+  children?: any[]
+  columns?: number
+}) => {
+  const cols = columns && columns >= 1 ? Math.min(columns, 6) : 3
+  // Tailwind requires explicit classes; map allowed options
+  const gridColsClass =
+    cols === 2
+      ? 'md:grid-cols-2'
+      : cols === 4
+        ? 'md:grid-cols-4'
+        : cols === 5
+          ? 'md:grid-cols-5'
+          : cols === 6
+            ? 'md:grid-cols-6'
+            : 'md:grid-cols-3'
+  return (
+    <div className={`grid grid-cols-1 ${gridColsClass} gap-4 w-full`}> 
+      {children?.map((child: any, index: number) => (
+        <React.Fragment key={index}>{getComponent(child)}</React.Fragment>
+      ))}
+    </div>
+  )
+}
 
 export const OrderComponent = ({ id, total, date, status, products }: any) => (
   <div className="flex flex-col gap-2 mb-3">
@@ -190,16 +257,16 @@ export const OrderComponent = ({ id, total, date, status, products }: any) => (
                   x {product.quantity ?? ''}
                 </span>
               </div>
-              <div className="text-xs font-semibold text-gray-800">
-                $ {product.item?.price ?? ''}
-              </div>
+        <div className="text-xs font-semibold text-gray-800">
+          {formatEUR(product.item?.price)}
+        </div>
             </div>
           ))}
         </div>
       </div>
       <div className="flex items-center justify-between">
         <div className="text-gray-500 font-semibold">Total</div>
-        <div className="font-medium text-gray-900 ">$ {total}</div>
+        <div className="font-medium text-gray-900 ">{formatEUR(total)}</div>
       </div>
     </div>
     <div className="flex justify-start">
@@ -235,6 +302,7 @@ export const CarouselComponent = ({ children }: { children?: any[] }) => (
 export const componentsMap = {
   card: CardComponent,
   carousel: CarouselComponent,
+  plp_grid: PlpGridComponent,
   bar_chart: BarChartComponent,
   header: HeaderComponent,
   table: TableComponent,

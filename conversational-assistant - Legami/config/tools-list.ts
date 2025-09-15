@@ -4,69 +4,36 @@
 
 export const toolsList = [
   {
-    name: 'get_products',
-    description: 'Fetch the list of available products',
-    parameters: {}
-  },
-  {
-    name: 'get_product_details',
-    description: 'Fetch the details of a product',
+    name: 'search_redis',
+    description:
+      'Semantic KNN search on Redis vector index with optional filters. Returns top products; can include product JSON details.',
     parameters: {
-      productId: {
+      query_text: { type: 'string', description: 'User intent/query text' },
+      k: { type: 'integer', description: 'Top K results (1..50)' },
+      min_price: { type: 'number', description: 'Min price filter' },
+      max_price: { type: 'number', description: 'Max price filter' },
+      include_details: {
+        type: 'boolean',
+        description: 'If true, attach product JSON details.'
+      },
+      sort_by: {
         type: 'string',
-        description: 'ID of the product to fetch details for'
+        description: 'Result ordering: relevance (default), price_asc, price_desc',
+        enum: ['relevance', 'price_asc', 'price_desc']
+      },
+      expanded: {
+        type: 'boolean',
+        description: 'If true, perform an expanded, broader search.'
       }
     }
   },
   {
-    name: 'get_orders',
-    description: 'Fetch the list of orders',
-    parameters: {}
-  },
-  {
-    name: 'file_claim',
-    description: 'File a claim on behalf of a customer',
+    name: 'get_product',
+    description:
+      'Fetch a product JSON payload from Redis by product code/id (JSON only).',
     parameters: {
-      orderId: {
-        type: 'string',
-        description: 'ID of the order to file a claim for'
-      },
-      reason: {
-        type: 'string',
-        description: 'Reason for the claim'
-      },
-      description: {
-        type: 'string',
-        description: 'Description of the claim'
-      }
-    }
-  },
-  {
-    name: 'create_return',
-    description: 'Create a return for a specific order.',
-    parameters: {
-      orderId: {
-        type: 'string',
-        description: 'ID of the order to return'
-      },
-      return_items: {
-        type: 'array',
-        items: {
-          type: 'object',
-          properties: {
-            productId: {
-              type: 'string',
-              description: 'ID of the product to return'
-            },
-            quantity: {
-              type: 'integer',
-              description: 'Quantity of the product to return'
-            }
-          },
-          required: ['productId', 'quantity'],
-          additionalProperties: false
-        }
-      }
+      code: { type: 'string', description: 'Product code used in HASH key' },
+      id: { type: 'string', description: 'Product id used in JSON key' }
     }
   },
   {

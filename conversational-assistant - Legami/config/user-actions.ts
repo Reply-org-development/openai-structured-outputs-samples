@@ -27,3 +27,8 @@ export const addToCart = async (productId: string) => {
   const userMessage = `User added product ${productId} to cart.`
   await addUserActionToContext(userMessage)
 }
+
+export const viewProductDetails = async (productId: string) => {
+  const userMessage = `User requested details for product ${productId}.`
+  await addUserActionToContext(userMessage)
+}

@@ -13,6 +13,21 @@ export const components = [
     }
   },
   {
+    name: 'plp_grid',
+    parameters: {
+      columns: {
+        type: 'integer',
+        description: 'Number of columns (default 3).',
+        minimum: 1,
+        maximum: 6
+      },
+      children: {
+        type: 'array',
+        items: { $ref: '#/$defs/item' }
+      }
+    }
+  },
+  {
     name: 'header',
     parameters: {
       content: {
