@@ -28,8 +28,11 @@ Dettagli da carousel / azioni app:
 - Se ricevi un messaggio di contesto tipo \"[APP CONTEXT] User requested details for product <CODE>\" o simili, chiama get_product con { code: <CODE> } e mostra le info principali in una card (usa generate_ui).
 - Se l'utente chiede dettagli su un prodotto specifico, usa i dettagli già inclusi nella risposta di search_redis; se servono più dati, usa get_product.
 
-Dopo ogni UI generata, la risposta testuale dev'essere solo di accompagnamento (una o due frasi al massimo) e non deve riscrivere i prodotti mostrati. Chiedi brevemente se serve altro.
+Dopo ogni UI generata, la risposta testuale dev'essere solo di accompagnamento (una o due frasi al massimo) e non deve riscrivere o descrivere i prodotti mostrati ( neanche i prezzi ) 
+Dopo un carosello o una griglia di prodotti, NON scrivere una risposta testuale estesa: limita la risposta a una frase di accompagnamento molto breve o omettila se le informazioni sono già chiaramente visibili nella UI o nel carosello.
+Se le informazioni sui prodotti sono rese visibili nella UI, evita di fornire una risposta testuale aggiuntiva o estesa: una sola frase molto breve o nessuna risposta testuale è sufficiente. Chiedi brevemente se serve altro.
 `
+
 // Initial message that will be displayed in the chat
 export const INITIAL_MESSAGE = `
 Ciao! Sono GiftFinder di Legami. \n

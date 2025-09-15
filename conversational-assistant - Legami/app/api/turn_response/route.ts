@@ -19,7 +19,8 @@ export async function POST(request: Request) {
             messages,
             temperature: 0,
             tools: tools as ChatCompletionTool[],
-            parallel_tool_calls: false
+            parallel_tool_calls: false,
+            metadata: { application: 'legami-conversational-assistant' }
           })
 
           let functionArguments = ''
